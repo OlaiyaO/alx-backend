@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 """
-Contains class with methods to create simple pagination from CSV data.
+Contains class with methods to create simple pagination from csv data
 """
 import csv
-from typing import List, Dict
+from typing import List
 index_range = __import__('0-simple_helper_function').index_range
 
 
 class Server:
-    """Server class to paginate a database of popular baby names."""
-    
+    """Server class to paginate a database of popular baby names.
+    """
     DATA_FILE = "Popular_Baby_Names.csv"
 
     def __init__(self):
@@ -17,16 +17,15 @@ class Server:
 
     def dataset(self) -> List[List]:
         """
-        Reads from the CSV file and returns the dataset.
-        
+        Reads from csv file and returns the dataset.
         Returns:
-            List[List]: The dataset without the header row.
+            List[List]: The dataset.
         """
         if self.__dataset is None:
             with open(self.DATA_FILE) as f:
                 reader = csv.reader(f)
                 dataset = [row for row in reader]
-            self.__dataset = dataset[1:]  # Skip the header
+            self.__dataset = dataset[1:]
 
         return self.__dataset
 
@@ -34,59 +33,47 @@ class Server:
     def assert_positive_integer_type(value: int) -> None:
         """
         Asserts that the value is a positive integer.
-        
         Args:
-            value (int): The value to be checked.
+            value (int): The value to be asserted.
         """
-        assert isinstance(value, int) and value > 0, f"Value must be a positive integer, got {value}."
+        assert type(value) is int and value > 0
 
     def get_page(self, page: int = 1, page_size: int = 10) -> List[List]:
         """
-        Retrieves a page of the dataset.
-        
+        Returns a page of the dataset.
         Args:
-            page (int): The page number (1-indexed).
-            page_size (int): The number of records per page.
-        
+            page (int): The page number.
+            page_size (int): The page size.
         Returns:
-            List[List]: A list containing the requested page of the dataset.
+            List[List]: The page of the dataset.
         """
         self.assert_positive_integer_type(page)
         self.assert_positive_integer_type(page_size)
-
         dataset = self.dataset()
         start, end = index_range(page, page_size)
+        try:
+            data = dataset[start:end]
+        except IndexError:
+            data = []
+        return data
 
-        if start >= len(dataset):
-            return []  # Return an empty list if the page number exceeds the dataset size
-
-        return dataset[start:end]
-
-    def get_hyper(self, page: int = 1, page_size: int = 10) -> Dict:
+    def get_hyper(self, page: int = 1, page_size: int = 10) -> dict:
         """
-        Provides paginated data with metadata for hypermedia pagination.
-        
+        Returns a page of the dataset.
         Args:
-            page (int): The current page number (1-indexed).
-            page_size (int): The number of records per page.
-        
+            page (int): The page number.
+            page_size (int): The page size.
         Returns:
-            Dict: A dictionary containing pagination metadata and the requested page's data.
+            List[List]: The page of the dataset.
         """
-        self.assert_positive_integer_type(page)
-        self.assert_positive_integer_type(page_size)
-
-        dataset_length = len(self.dataset())
-        total_pages = math.ceil(dataset_length / page_size)  # Calculate total pages
-
+        total_pages = len(self.dataset()) // page_size + 1
         data = self.get_page(page, page_size)
         info = {
             "page": page,
-            "page_size": page_size if len(data) > 0 else 0,  # Ensure page_size is zero if no data
-            "data": data,
+            "page_size": page_size if page_size <= len(data) else len(data),
             "total_pages": total_pages,
+            "data": data,
             "prev_page": page - 1 if page > 1 else None,
-            "next_page": page + 1 if page < total_pages else None
+            "next_page": page + 1 if page + 1 <= total_pages else None
         }
-
         return info
