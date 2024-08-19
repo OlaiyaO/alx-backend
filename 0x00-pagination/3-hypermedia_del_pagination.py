@@ -44,15 +44,15 @@ class Server:
         return self.__indexed_dataset
 
     def get_hyper_index(self, index: int = None, page_size: int = 10) -> Dict:
-        """Returns a dictionary with pagination information that is deletion-resilient.
+        """Returns a delition-resilient dictionary.
 
         Args:
             index (int): The start index for pagination.
             page_size (int): The number of records to return.
 
         Returns:
-            Dict: A dictionary with the current index, next index, page size, and data.
-        
+            Dict: Contains current index, next index, page size, and data.
+
         Raises:
             AssertionError: If index is out of range.
         """
