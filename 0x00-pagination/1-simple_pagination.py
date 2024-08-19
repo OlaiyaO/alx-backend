@@ -59,14 +59,16 @@ class Server:
         Returns:
             List[List]: A list containing the requested page's data.
         """
-        assert isinstance(page, int) and page > 0, "Page must be a positive integer."
-        assert isinstance(page_size, int) and page_size > 0, "Page size must be a positive integer."
+        assert isinstance(page, int) and page > 0,
+        "Page must be a positive integer."
+        assert isinstance(page_size, int) and page_size > 0,
+        "Page size must be a positive integer."
 
         dataset = self.dataset()
         data_length = len(dataset)
         index = index_range(page, page_size)
 
         if index[0] >= data_length:
-            return []  # Return an empty list if the start index exceeds the dataset length.
+            return []
 
         return dataset[index[0]:index[1]]
