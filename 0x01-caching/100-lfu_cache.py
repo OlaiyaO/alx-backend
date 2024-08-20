@@ -11,7 +11,8 @@ class LFUCache(BaseCaching):
 
     def __init__(self):
         """
-        Initialize the cache with a usage list and a frequency dictionary to track the usage frequency of keys.
+        Initialize the cache with a usage list and a frequency dictionary
+        to track the usage frequency of keys.
         """
         super().__init__()
         self.usage = []  # Tracks the order of key usage
@@ -20,20 +21,23 @@ class LFUCache(BaseCaching):
     def put(self, key, item):
         """
         Add a key-value pair to the cache.
-        If the cache exceeds the MAX_ITEMS limit, the least frequently used entry is discarded.
-        If multiple keys have the same lowest frequency, the least recently used among them is discarded.
+        If the cache exceeds the MAX_ITEMS limit, the least frequently used
+        entry is discarded.
+        If multiple keys have the same lowest frequency, the least recently
+        used among them is discarded.
         Args:
             key: The key under which the item should be stored.
             item: The value to store in the cache.
         """
         if key is not None and item is not None:
-            if len(self.cache_data) >= BaseCaching.MAX_ITEMS and key not in self.cache_data:
+            if len(self.cache_data) >= BaseCaching.MAX_ITEMS and \
+                    key not in self.cache_data:
                 # Find the least frequently used (LFU) key(s)
                 lfu = min(self.frequency.values())
                 lfu_keys = [k for k, v in self.frequency.items() if v == lfu]
-                
+
                 if len(lfu_keys) > 1:
-                    # If there's a tie, discard the least recently used (LRU) among the LFU keys
+                    # If there's a tie, discard the least recently used (LRU)
                     lru_lfu = {k: self.usage.index(k) for k in lfu_keys}
                     discard = self.usage[min(lru_lfu.values())]
                 else:
@@ -46,10 +50,10 @@ class LFUCache(BaseCaching):
 
             # Update or add the key and its usage frequency
             self.frequency[key] = self.frequency.get(key, 0) + 1
-            
+
             if key in self.usage:
                 self.usage.remove(key)
-            
+
             self.usage.append(key)
             self.cache_data[key] = item
 
@@ -60,7 +64,7 @@ class LFUCache(BaseCaching):
         Args:
             key: The key to look up in the cache.
         Returns:
-            The value associated with the key, or None if the key doesn't exist.
+            The value associated with the key, or None if it doesn't exist.
         """
         if key is not None and key in self.cache_data:
             self.usage.remove(key)
