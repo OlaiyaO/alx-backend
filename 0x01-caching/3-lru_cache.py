@@ -11,7 +11,7 @@ class LRUCache(BaseCaching):
 
     def __init__(self):
         """
-        Initialize the cache and a usage list to track the order of key access.
+        Initialize cache and a usage list to track the order of key access.
         """
         super().__init__()
         self.usage = []
@@ -19,20 +19,22 @@ class LRUCache(BaseCaching):
     def put(self, key, item):
         """
         Add a key-value pair to the cache.
-        If the cache exceeds the MAX_ITEMS limit, the least recently used entry is discarded.
+        If the cache exceeds the MAX_ITEMS limit, the least recently used
+        entry is discarded.
         Args:
             key: The key under which the item should be stored.
             item: The value to store in the cache.
         """
         if key is not None and item is not None:
-            if len(self.cache_data) >= BaseCaching.MAX_ITEMS and key not in self.cache_data:
+            if len(self.cache_data) >= BaseCaching.MAX_ITEMS and \
+                    key not in self.cache_data:
                 oldest_key = self.usage.pop(0)
                 print(f"DISCARD: {oldest_key}")
                 del self.cache_data[oldest_key]
-            
+
             if key in self.usage:
                 self.usage.remove(key)
-            
+
             self.usage.append(key)
             self.cache_data[key] = item
 
@@ -43,7 +45,7 @@ class LRUCache(BaseCaching):
         Args:
             key: The key to look up in the cache.
         Returns:
-            The value associated with the key, or None if the key doesn't exist.
+            The value associated with the key, or None if it doesn't exist.
         """
         if key is not None and key in self.cache_data:
             self.usage.remove(key)
