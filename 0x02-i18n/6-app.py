@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-This script sets up a Flask application.
+Flask app
 """
 from flask import (
     Flask,
@@ -17,7 +17,7 @@ from typing import (
 
 class Config(object):
     """
-    Babel configuration settings.
+    Configuration for Babel
     """
     LANGUAGES = ["en", "fr"]
     BABEL_DEFAULT_LOCALE = "en"
@@ -39,8 +39,8 @@ users = {
 
 def get_user() -> Union[Dict, None]:
     """
-    Retrieve a user dictionary based on the 'login_as' URL parameter.
-    Returns None if the ID is not found or if the parameter is missing.
+    Returns a user dictionary or None if ID value can't be found
+    or if 'login_as' URL parameter was not found
     """
     id = request.args.get('login_as', None)
     if id and int(id) in users.keys():
@@ -51,8 +51,7 @@ def get_user() -> Union[Dict, None]:
 @app.before_request
 def before_request():
     """
-    Attach the user to flask.g before processing the request,
-    if a user is found.
+    Add user to flask.g if user is found
     """
     user = get_user()
     g.user = user
@@ -61,8 +60,7 @@ def before_request():
 @babel.localeselector
 def get_locale():
     """
-    Determine and return the most appropriate language based on query
-    parameters, user settings, or request headers.
+    Select and return best language match based on supported languages
     """
     loc = request.args.get('locale')
     if loc in app.config['LANGUAGES']:
@@ -80,7 +78,7 @@ def get_locale():
 @app.route('/', strict_slashes=False)
 def index() -> str:
     """
-    Renders the template for the root URL ('/').
+    Handles / route
     """
     return render_template('5-index.html')
 
