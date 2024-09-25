@@ -1,0 +1,16 @@
+# Ignore node modules
+node_modules/
+
+# Ignore Redis files
+redis-7.4.0/
+redis-7.4.0.tar.gz
+dump.rdb
+
+# Ignore npm logs and lock files if not needed
+package-lock.json
+npm-debug.log*
+yarn-error.log
+
+# Ignore system files
+.DS_Store
+Thumbs.db
